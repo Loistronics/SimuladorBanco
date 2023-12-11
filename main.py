@@ -15,7 +15,7 @@ class Cliente(Persona):
     def depositar(self, monto):
         self.balance = float(self.balance) + float(monto)
     def retirar(self, monto):
-        if(monto <= self.balance):
+        if(float(monto) <= float(self.balance)):
             self.balance = float(self.balance) - float(monto)
     def __str__(self):
         return f"{self.cedula} , {self.nombre} , {self.apellido} , {self.numero_cuenta} , {self.balance}"
@@ -33,7 +33,7 @@ def crearCliente():
     apellido = input("Ingrese apellido del cliente: ")
     opcion = input("El cliente desea realizar su primer deposito? (Si/No): ")
     if(opcion.lower() == "si"):
-        saldo_inicial = float(input("Ingrese el monto "))
+        saldo_inicial = float(input("Ingrese el monto: "))
     else:
         saldo_inicial = float(0)
     numero_cuenta = f"0105-1478-1147-{randint(10000000,99999999)}"
@@ -55,6 +55,7 @@ def operacionesCliente():
     lista_clientes = [i.split(",") for i in clientes]
     for i in lista_clientes:
         if i[0].strip() == cedula:
+            indice = lista_clientes.index(i)
             cliente = Cliente(i[0],i[1],i[2],i[3],i[4])
             system("cls")
             print(cliente)
@@ -71,13 +72,21 @@ def operacionesCliente():
                 monto = float(input(("Ingrese monto a retirar: ")))
                 cliente.retirar(monto)
                 print(cliente)
+            clientes[indice] = cliente
+            with open(Path(Path.home(),"cuentas.txt"),'w') as f:
+                #f.writelines([str(i) + "\n" for i in clientes])
+                f.writelines([str(i)  for i in clientes])
 
 inicio()
-print("Bienvenido al Sistema del Banco")
-print("1 - Crear Cliente")
-print("2 - Operaciones de Clientes")
-opcion = int(input("Elija una de las opciones: "))
-if opcion == 1:
-    crearCliente()
-elif opcion == 2:
-    operacionesCliente()
+while True:
+    print("Bienvenido al Sistema del Banco")
+    print("1 - Crear Cliente")
+    print("2 - Operaciones de Clientes")
+    print("3 - Salir")
+    opcion = int(input("Elija una de las opciones: "))
+    if opcion == 1:
+        crearCliente()
+    elif opcion == 2:
+        operacionesCliente()
+    elif opcion == 3:
+        break
